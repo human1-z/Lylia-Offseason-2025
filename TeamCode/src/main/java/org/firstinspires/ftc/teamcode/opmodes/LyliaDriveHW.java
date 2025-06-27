@@ -13,8 +13,8 @@ public class LyliaDriveHW extends LinearOpMode{
         // remember hardware map exists :3
         PriorityMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront", 1, 1, 1, 0);
         PriorityMotor leftBack = hardwareMap.get(DcMotorEx.class, "leftBack", 1, 1, 1, 0);
-        PriorityMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        PriorityMotor rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        PriorityMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront", 1, 1, 1, 0);
+        PriorityMotor rightBack = hardwareMap.get(DcMotorEx.class, "rightBack", 1, 1, 1, 0);
 
         Gamepad gamepad1 = new Gamepad();
         double drive, strafe, turn;
@@ -39,6 +39,7 @@ public class LyliaDriveHW extends LinearOpMode{
             rightFrontPower = drive - strafe - turn;
             rightBackPower = drive + strafe - turn;
 
+            //need to fix; max only takes 2 arguments
             double max = Math.max(1, Math.abs(leftFrontPower), Math.abs(leftBackPower), Math.abs(rightFrontPower), Math.abs(rightBackPower));
 
             leftFront.setTargetPower(leftFrontPower);
