@@ -19,7 +19,9 @@ public class LyliaRobot {
         this.hardwareMap = hardwareMap; // set the hardwareMap attribute of the Robot to the one that was passed in
         this.hardwareQueue = new HardwareQueue(); // hardware queue managed in the robot class
 
-        //initialize the drivetrain, depo, intake, and sensors
+        this.deposit = new LyliaDeposit();
+        this.intake = new LyliaIntake();
+        this.sensors=new(Sensors);
     }
 
     public void update(LyliaRobot lyliaRobot) {

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
 public class LyliaTeleop extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
-        HardwareMap hardwareMap = new HardwareMap(); // need 2 arguments for HardwareMap()
+//        HardwareMap hardwareMap = new HardwareMap(); // need 2 arguments for HardwareMap()
         HardwareQueue hardwareQueue = new HardwareQueue();
 
         LyliaRobot robot = new LyliaRobot(hardwareMap);
