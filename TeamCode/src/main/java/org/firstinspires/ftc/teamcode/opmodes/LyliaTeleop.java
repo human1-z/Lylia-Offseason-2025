@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.opmodes;
-import static java.lang.Double.max;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -14,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
 public class LyliaTeleop extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
-        HardwareMap hardwareMap = new hardwareMap();
+        HardwareMap hardwareMap = new HardwareMap();
         HardwareQueue hardwareQueue = new HardwareQueue();
 
         LyliaRobot robot = new LyliaRobot(hardwareMap);
@@ -30,7 +29,6 @@ public class LyliaTeleop extends LinearOpMode{
 
         for (int i=0; i<motors.length; i++) {
             hardwareQueue.addDevice(motors[i]);
-            return;
         }
 
         double drive, strafe, turn;
@@ -47,7 +45,7 @@ public class LyliaTeleop extends LinearOpMode{
             strafe = gamepad1.left_stick_x;
             turn = gamepad1.right_stick_x;
 
-            denominator = max(1, (Math.abs(drive) + Math.abs(strafe) + Math.abs(turn)));
+            denominator = Math.max(1, (Math.abs(drive) + Math.abs(strafe) + Math.abs(turn)));
 
             leftFrontPower = (drive + strafe + turn) / denominator;
             leftBackPower = (drive - strafe + turn) / denominator;
