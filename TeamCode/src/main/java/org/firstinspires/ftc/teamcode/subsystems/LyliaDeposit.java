@@ -11,9 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.LyliaRobot;
 import org.firstinspires.ftc.teamcode.utils.priority.nPriorityServo;
 
-public class LyliaDeposit (){
-    HardwareMap hardwareMap = new HardwareMap();
-
+public class LyliaDeposit (LyliaRobot robot){
     public final nPriorityServo lyliaClawPosition;
     public final nPriorityServo lyliaClawRotate;
 
