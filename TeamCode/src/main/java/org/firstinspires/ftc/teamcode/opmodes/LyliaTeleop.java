@@ -8,22 +8,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.LyliaRobot;
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
-import org.firstinspires.ftc.teamcode.subsystems.LyliaDrivetrain;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
 
 public class LyliaTeleop extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
-        // create 4 motors, leftFront, leftRear, rightFront, rightRear
-        // read the PriorityMotor class if you don't know how to make one
-        // remember hardware map exists :3
         HardwareMap hardwareMap = new hardwareMap();
         HardwareQueue hardwareQueue = new HardwareQueue();
 
         LyliaRobot robot = new LyliaRobot(hardwareMap);
         Gamepad gamepad1 = new Gamepad();
-        Sensors sensors = new Sensors(robot); //needs me to pass in a Robot but im using the LyliaRobot class so it wont work
+        Sensors sensors = new Sensors(robot); //Sensors constructor needs me to pass in a Robot, but im using the LyliaRobot class so it wont work
 
         PriorityMotor leftFront = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftFront"), "leftFront", 0,7, 1, sensors);
         PriorityMotor leftBack = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftBack"), "leftBack", 0.7, 1, 1, sensors);
@@ -51,8 +47,7 @@ public class LyliaTeleop extends LinearOpMode{
             strafe = gamepad1.left_stick_x;
             turn = gamepad1.right_stick_x;
 
-            // NEED TO RESOLVE: why is the second parameter not showing the "b: " in front of it
-            denominator = max(1, ((Math.abs(drive) + Math.abs(strafe) + Math.abs(turn)));
+            denominator = max(1, (Math.abs(drive) + Math.abs(strafe) + Math.abs(turn)));
 
             leftFrontPower = (drive + strafe + turn) / denominator;
             leftBackPower = (drive - strafe + turn) / denominator;
