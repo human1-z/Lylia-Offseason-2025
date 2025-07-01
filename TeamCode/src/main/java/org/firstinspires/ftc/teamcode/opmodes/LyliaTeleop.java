@@ -1,0 +1,68 @@
+package org.firstinspires.ftc.teamcode.opmodes;
+import static java.lang.Double.max;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.LyliaRobot;
+import org.firstinspires.ftc.teamcode.sensors.Sensors;
+import org.firstinspires.ftc.teamcode.subsystems.LyliaDrivetrain;
+import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
+import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
+
+public class LyliaTeleop extends LinearOpMode{
+    @Override
+    public void runOpMode() throws InterruptedException{
+        // create 4 motors, leftFront, leftRear, rightFront, rightRear
+        // read the PriorityMotor class if you don't know how to make one
+        // remember hardware map exists :3
+        HardwareMap hardwareMap = new hardwareMap();
+        HardwareQueue hardwareQueue = new HardwareQueue();
+
+        LyliaRobot robot = new LyliaRobot(hardwareMap);
+        Gamepad gamepad1 = new Gamepad();
+        Sensors sensors = new Sensors(robot); //needs me to pass in a Robot but im using the LyliaRobot class so it wont work
+
+        PriorityMotor leftFront = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftFront"), "leftFront", 0,7, 1, sensors);
+        PriorityMotor leftBack = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftBack"), "leftBack", 0.7, 1, 1, sensors);
+        PriorityMotor rightFront = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "rightFront"), "rightFront", 0.7, 1, 1, sensors);
+        PriorityMotor rightBack = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "rightBack"), "rightBack", 1, 1, 1, sensors);
+
+        PriorityMotor[] motors = {leftFront, leftBack, rightFront, rightBack};
+
+        for (int i=0; i<motors.length; i++) {
+            hardwareQueue.addDevice(motors[i]);
+            return;
+        }
+
+        double drive, strafe, turn;
+        double leftFrontPower, leftBackPower, rightFrontPower, rightBackPower;
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            hardwareQueue.update();
+
+            double denominator;
+
+            drive = -gamepad1.left_stick_y;
+            strafe = gamepad1.left_stick_x;
+            turn = gamepad1.right_stick_x;
+
+            // NEED TO RESOLVE: why is the second parameter not showing the "b: " in front of it
+            denominator = max(1, ((Math.abs(drive) + Math.abs(strafe) + Math.abs(turn)));
+
+            leftFrontPower = (drive + strafe + turn) / denominator;
+            leftBackPower = (drive - strafe + turn) / denominator;
+            rightFrontPower = (drive - strafe - turn) / denominator;
+            rightBackPower = (drive + strafe - turn) / denominator;
+
+            leftFront.setTargetPower(leftFrontPower);
+            leftBack.setTargetPower(leftBackPower);
+            rightFront.setTargetPower(rightFrontPower);
+            rightBack.setTargetPower(rightBackPower);
+        }
+    }
+}

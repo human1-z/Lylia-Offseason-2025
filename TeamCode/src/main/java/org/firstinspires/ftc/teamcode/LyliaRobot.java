@@ -12,9 +12,9 @@ public class LyliaRobot {
     //create a hardware queue
     public HardwareMap hardwareMap;
     public HardwareQueue hardwareQueue;
-    public LyliaDrivetrain lyliaDrivetrain;
-    public LyliaDeposit lyliaDeposit;
-    public LyliaIntake lyliaIntake;
+    public LyliaDrivetrain drivetrain;
+    public LyliaDeposit deposit;
+    public LyliaIntake intake;
     public Sensors sensors;
 
     public LyliaRobot(HardwareMap hardwareMap){
