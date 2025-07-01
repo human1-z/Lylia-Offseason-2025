@@ -9,10 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.LyliaIntake;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 
 public class LyliaRobot {
-    //create a hardware queue
     public HardwareMap hardwareMap;
     public HardwareQueue hardwareQueue;
-    public LyliaDrivetrain drivetrain;
     public LyliaDeposit deposit;
     public LyliaIntake intake;
     public Sensors sensors;
@@ -26,7 +24,6 @@ public class LyliaRobot {
 
     public void update(LyliaRobot lyliaRobot) {
         // call update() on all the subsystems
-        lyliaRobot.update(lyliaRobot.lyliaDrivetrain);
     }
 
 }

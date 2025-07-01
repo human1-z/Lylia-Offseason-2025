@@ -20,23 +20,9 @@ public class LyliaDrivetrain {
 
     LyliaRobot robot = new LyliaRobot(hardwareMap);
 
-
-    // NEED TO FIX: error
-
     public LyliaDrivetrain(LyliaRobot robot) {
         
     }
-
-    public void drive(Gamepad gamepad1){
-
-
-
-    }
     public void update() {
-
-        leftFront.setTargetPower(leftFrontPower);
     }
-
-
-    //also has a drive() method?? why do you
 }
