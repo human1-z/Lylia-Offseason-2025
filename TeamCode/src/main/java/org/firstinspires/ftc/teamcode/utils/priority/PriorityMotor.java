@@ -96,6 +96,8 @@ public class PriorityMotor extends PriorityDevice {
         if (power-lastPower == 0) {
             lastUpdateTime = System.nanoTime();
             return 0;
+            /* power is the same as it was last
+            this motor has low(?) priority */
         }
 
         if (timeRemaining * 1000.0 <= callLengthMillis * (motor.length-1) + callLengthMillis/2.0) {
@@ -103,6 +105,7 @@ public class PriorityMotor extends PriorityDevice {
         }
 
         return basePriority + priorityScale * (System.nanoTime() - lastUpdateTime)/1.0E6 * Math.abs(power-lastPower);
+        /* basePriority + (multiplier * (how long since last updated)/ 1 million * absolute difference between current and last power) */
     }
 
     @Override

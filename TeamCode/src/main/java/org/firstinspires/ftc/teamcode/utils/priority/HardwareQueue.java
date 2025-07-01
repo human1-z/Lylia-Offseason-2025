@@ -26,6 +26,8 @@ public class HardwareQueue {
 
     public void update() {
         for (PriorityDevice device : devices) {
+            /* boolean called isUpdated
+            resetUpdateBoolean sets all of the devices' isUpdated boolean to false */
             device.resetUpdateBoolean();
         }
 
