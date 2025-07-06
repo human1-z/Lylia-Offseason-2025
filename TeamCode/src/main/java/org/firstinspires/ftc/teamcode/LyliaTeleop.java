@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.LyliaRobot;
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
@@ -13,12 +11,11 @@ import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
 public class LyliaTeleop extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
-//        HardwareMap hardwareMap = new HardwareMap(); // need 2 arguments for HardwareMap()
         HardwareQueue hardwareQueue = new HardwareQueue();
 
-        LyliaRobot robot = new LyliaRobot(hardwareMap);
+        Robot robot = new Robot(hardwareMap);
         Gamepad gamepad1 = new Gamepad();
-        Sensors sensors = new Sensors(robot); //Sensors constructor needs me to pass in a Robot, but im using the LyliaRobot class so it wont work
+        Sensors sensors = new Sensors(robot); //ignore error; create a new sensors class
 
         PriorityMotor leftFront = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftFront"), "leftFront", 0,7, 1, sensors);
         PriorityMotor leftBack = new PriorityMotor(hardwareMap.get(DcMotorEx.class, "leftBack"), "leftBack", 0.7, 1, 1, sensors);
