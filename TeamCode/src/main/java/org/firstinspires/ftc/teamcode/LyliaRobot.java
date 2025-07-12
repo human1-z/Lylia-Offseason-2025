@@ -4,8 +4,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
 import org.firstinspires.ftc.teamcode.subsystems.LyliaDeposit;
+import org.firstinspires.ftc.teamcode.subsystems.LyliaDrivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.LyliaIntake;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class LyliaRobot {
     //create a hardware queue
@@ -15,6 +17,7 @@ public class LyliaRobot {
     public LyliaDeposit deposit;
     public LyliaIntake intake;
     public Sensors sensors;
+    public Gamepad gamepad;
 
     public LyliaRobot(HardwareMap hardwareMap){
         this.hardwareMap = hardwareMap;
@@ -25,6 +28,8 @@ public class LyliaRobot {
 
     public void update(LyliaRobot lyliaRobot) {
         // call update() on all the subsystems
-        lyliaRobot.update(lyliaRobot.lyliaDrivetrain);
+
+        drivetrain.update();
+        intake.update();
     }
 }
