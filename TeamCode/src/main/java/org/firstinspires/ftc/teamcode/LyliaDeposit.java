@@ -5,23 +5,29 @@ import static org.firstinspires.ftc.teamcode.utils.priority.nPriorityServo.Servo
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.subsystems.LyliaIntake;
 import org.firstinspires.ftc.teamcode.utils.priority.nPriorityServo;
 
 public class LyliaDeposit{
-    public final nPriorityServo claw; // open/close claw
-    public final nPriorityServo clawAngle; // rotate claw up/down
-    public final nPriorityServo clawExtension; // extend/retract end effector
-    public final nPriorityServo[] armRotation; // rotate arm
+    public nPriorityServo claw; // open/close claw
+    public nPriorityServo clawRotServo; // rotate claw up/down
+    public nPriorityServo armSlidesServo; // extend/retract end effector
+    public nPriorityServo armRotServo; // rotate arm
+    public VerticalSlides verticalSlides; //raise/lower vertical slides
+    public LyliaIntake intake;
 
     // arbitrary numbers
-    public static double clawOpenPosition = 500;
-    public static double clawClosedPosition = 0;
+    public static double CLAW_OPEN = Math.toRadians(50), CLAW_CLOSED = Math.toRadians(0);
+    public static double CLAW_TRANSFER_ANGLE = Math.toRadians(45), CLAW_DEPOSIT_ANGLE = Math.toRadians(0), CLAW_ROTATE_POWER = 0.5;
+    public static double ARM_TRANSFER_ANGLE = Math.toRadians(45), ARM_PIXEL_ANGLE = Math.toRadians(270), ARM_SAMPLE_ANGLE = Math.toRadians(300), ARM_ROTATE_POWER = 0.5;
+    public static double ARM_EXTENSION_NONE = 0, ARM_EXTENSION_FULL = 100;
+    public static double SLIDES_ZERO_POSITION = 0, SLIDES_DEPOSIT_PIXEL = 200, SLIDES_DEPOSIT_SAMPLE = 300;
 
-    public final Robot robot;
+    public Robot robot;
 
     public enum State {
         IDLE,
-        TRANSFER_OPEN, //vertical slides down, horizontl slides in, arm rotated certain position, end effector rotated 90 degreees down, claw open
+        TRANSFER_OPEN, //vertical slides down, horizontal slides in, arm rotated certain position, end effector rotated 90 degreees down, claw open
         TRANSFER_CLOSED, //same as above but claw closed
         DEPOSIT_SAMPLE_WAIT, // arm rotated around facing other way, end effector extended all the way out, claw still closed
         DEPOSIT_PIXEL_WAIT,
@@ -33,28 +39,40 @@ public class LyliaDeposit{
         this.robot = robot;
 
         claw = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "claw"), "claw", AXON_MINI, 0.25,0.75,0.5, new boolean[]{false}, 0.2, 0.4);
-        clawAngle = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "clawAngle"), "clawAngle", PRO_MODELER, 0.0, 1.0, 0.5, new boolean[]{false}, 0.2, 0.5);
-        clawExtension = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "clawExtension"), "clawExtension", AXON_MINI, 0.0, 1.0, 0.0, new boolean[]{false}, 0.2, 0.4);
-        armRotation = new nPriorityServo[](new Servo[] {robot.hardwareMap.get(Servo.class, "armLeft"), robot.hardwareMap.get(Servo.class, "armRight")}, "armServos", AXON_MINI, 0, 1, 0, new boolean[] {false, true}, 0.4, 0.5);
+        clawRotServo = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "clawRotServo"), "clawRotServo", PRO_MODELER, 0.0, 1.0, 0.5, new boolean[]{false}, 0.2, 0.5);
+        armSlidesServo = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "armSlidesServo"), "armSlidesServo", AXON_MINI, 0.0, 1.0, 0.0, new boolean[]{false}, 0.2, 0.4);
+        armRotServo = new nPriorityServo[](new Servo[] {robot.hardwareMap.get(Servo.class, "armLeft"), robot.hardwareMap.get(Servo.class, "armRight")}, "armServos", AXON_MINI, 0, 1, 0, new boolean[] {false, true}, 0.4, 0.5);
+        verticalSlides = new VerticalSlides(this.robot);
+        intake = new LyliaIntake(this.robot);
 
         robot.hardwareQueue.addDevice(claw);
-        robot.hardwareQueue.addDevice(clawAngle);
-        robot.hardwareQueue.addDevice(clawExtension);
-        robot.hardwareQueue.addDevice(armRotation);
+        robot.hardwareQueue.addDevice(clawRotServo);
+        robot.hardwareQueue.addDevice(armSlidesServo);
+        robot.hardwareQueue.addDevice(armRotServo);
     }
 
     public State state = State.IDLE;
 
-    // methods
-    public void clawOpen(double position){
-        claw.setTargetPos(position);
+    public void setClawRotation(double targetAngle) {
+        clawRotServo.setTargetAngle(targetAngle, CLAW_ROTATE_POWER);
     }
-    public void clawClose(double position){
-        claw.setTargetPos(position);
+    public void setArmRotServo(double targetAngle) {
+        setArmRotServo(targetAngle);
     }
+    public void clawOpen() {
+        claw.setTargetAngle(CLAW_OPEN, 1);
+    }
+    public void clawClose() {
+        claw.setTargetAngle(CLAW_CLOSED, 1);
+    }
+    public void setArmLength(double length) {
+        /*
+        */
 
-    public void setClawAngle(double angle){
-        clawAngle.setTargetAngle(angle);
+        // extension ranges from 0 to 100 mm
+        double radians;
+        radians =
+        armSlidesServo.setTargetAngle(radians);
     }
 
     public void update() {
@@ -62,41 +80,57 @@ public class LyliaDeposit{
             case IDLE:
                 // vertical slides fully down
                 // horizontal slides retracted?
+                // move everything to the starting position
+                clawOpen(); // assuming there is space to keep it open while everything is retracted
                 break;
             case TRANSFER_OPEN:
                 // vertical slides fully down
+                verticalSlides.setTargetPosition(SLIDES_ZERO_POSITION);
                 // horizontal slides retracted
+
                 // arm rotated to be about 120 degrees from vertical
+                setArmRotServo(ARM_TRANSFER_ANGLE);
                 // end effector (claw) rotated 90 degrees to arm
+                setClawRotation(CLAW_TRANSFER_ANGLE);
                 // claw OPEN
-                clawOpen(clawOpenPosition);
+                clawOpen();
                 break;
             case TRANSFER_CLOSED:
                 // same as above, except
                 // claw CLOSED
-                clawClose(clawClosedPosition);
-                break;
+                clawClose();
+                if (intake.intakeState == LyliaIntake.State.TRANSFER_READY) {
+                    // need to check whether it's a sample or a pixel
+                    state = State.DEPOSIT_SAMPLE_WAIT;
+                } else {
+                    break;
+                }
             case DEPOSIT_SAMPLE_WAIT:
-                // verticl slides up
-                //horizontal slides sitll retracted
+                // vertical slides up
+
+                // horizontal slides still retracted
                 // arm rotated to be about 300 degrees from vertical
+                setArmRotServo(ARM_SAMPLE_ANGLE);
                 // end effector rotated to be parallel to ground
-                clawClose(clawClosedPosition); // claw CLOSED
+                setClawRotation(CLAW_DEPOSIT_ANGLE);
                 break;
             case DEPOSIT_PIXEL_WAIT:
-                // vertical slides up, depending on how high pixel the poles are
+                // vertical slides up, height depending on how high pixel the poles are
+
                 // horizontal slides still retracted
                 // arm rotated to be parallel to the ground
+                setArmRotServo(ARM_PIXEL_ANGLE);
                 // end effector rotated to also be parallel to ground
-                // claw closed
+                setClawRotation(CLAW_DEPOSIT_ANGLE);
                 break;
             case DEPOSIT_SAMPLE:
                 //same as above, but
-                clawOpen(clawOpenPosition);
+                clawOpen();
+                state = State.IDLE;
             case DEPOSIT_PIXEL:
-                //same as above, but
-                clawClose(clawClosedPosition);
 
+                clawOpen();
+                state = State.IDLE;
         }
     }
 }

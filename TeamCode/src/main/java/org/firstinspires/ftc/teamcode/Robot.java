@@ -3,26 +3,39 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
+import org.firstinspires.ftc.teamcode.LyliaDeposit;
+import org.firstinspires.ftc.teamcode.subsystems.LyliaDrivetrain;
+import org.firstinspires.ftc.teamcode.subsystems.LyliaIntake;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Robot {
-    public HardwareMap hardwareMap;
-    public HardwareQueue hardwareQueue;
-    public LyliaDeposit deposit;
-    public LyliaIntake intake;
-    public Sensors sensors;
+    public final HardwareMap hardwareMap;
+    public final HardwareQueue hardwareQueue;
+    public final LyliaDrivetrain drivetrain;
+    public final LyliaDeposit deposit;
+    public final LyliaIntake intake;
+    public final Sensors sensors;
+    public final Gamepad gamepad;
 
     public Robot(HardwareMap hardwareMap){
         this.hardwareMap = hardwareMap; // set the hardwareMap attribute of the Robot to the one that was passed in
         this.hardwareQueue = new HardwareQueue(); // hardware queue managed in the robot class
 
-        this.deposit = new LyliaDeposit(this);
-        this.intake = new LyliaIntake(this);
-        this.sensors=new Sensors(this); // ignore
+        drivetrain = new LyliaDrivetrain(this);
+        deposit = new LyliaDeposit(this);
+        intake = new LyliaIntake(this);
+        sensors = new Sensors(this);
+        gamepad = new Gamepad();
     }
 
     public void update(Robot lyliaRobot) {
         // call update() on all the subsystems
+        this.hardwareQueue.update();
+        sensors.update();
+        drivetrain.update();
+        intake.update();
+        deposit.update();
     }
 
 }
