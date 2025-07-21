@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.sensors.GoBildaPinpointDriver;
 
 public class LyliaSensors {
     //initialize the sensors
     //initialize robot
-    private final Robot robot;
+    private final LyliaRobot robot;
     public final GoBildaPinpointDriver odometry;
 
     private int vSlidesEncoder;

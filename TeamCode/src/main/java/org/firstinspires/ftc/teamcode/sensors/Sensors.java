@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.LyliaRobot;
 import org.firstinspires.ftc.teamcode.utils.DashboardUtil;
 import org.firstinspires.ftc.teamcode.utils.Globals;
 import org.firstinspires.ftc.teamcode.utils.LogUtil;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
 
 @Config
 public class Sensors {
-    private final Robot robot;
+    private final LyliaRobot lyliaRobot;
     private final GoBildaPinpointDriver odometry;
 
     private double voltage;
@@ -39,15 +39,15 @@ public class Sensors {
     private long lastTime = System.currentTimeMillis();
     private Vector2 instantVelo = new Vector2();
 
-    public Sensors(Robot robot) {
-        this.robot = robot;
+    public Sensors(LyliaRobot lyliaRobot) {
+        this.lyliaRobot = lyliaRobot;
 
-        odometry = robot.hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        odometry = lyliaRobot.hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         odometry.setOffsets(70, 65);
         odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
-        voltage = robot.hardwareMap.voltageSensor.iterator().next().getVoltage();
+        voltage = lyliaRobot.hardwareMap.voltageSensor.iterator().next().getVoltage();
 
         if (Globals.RUNMODE != RunMode.TELEOP) {
             hardwareResetSlidesEncoders();
@@ -76,10 +76,10 @@ public class Sensors {
         isStopped = confidence >= confidenceThresh;
     }
     public void hardwareResetSlidesEncoders() {
-        robot.hardwareMap.get(DcMotor.class, "leftRear").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hardwareMap.get(DcMotor.class, "leftRear").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.hardwareMap.get(DcMotor.class, "rightFront").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hardwareMap.get(DcMotor.class, "rightFront").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lyliaRobot.hardwareMap.get(DcMotor.class, "leftRear").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lyliaRobot.hardwareMap.get(DcMotor.class, "leftRear").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lyliaRobot.hardwareMap.get(DcMotor.class, "rightFront").setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lyliaRobot.hardwareMap.get(DcMotor.class, "rightFront").setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void softwareResetSlidesEncoders() {
@@ -89,12 +89,12 @@ public class Sensors {
     public void update() {
         odometry.update();
 
-        slidesEncoder = ((PriorityMotor) robot.hardwareQueue.getDevice("leftRear")).motor[0].getCurrentPosition();
-        slidesVel = ((PriorityMotor) robot.hardwareQueue.getDevice("leftRear")).motor[0].getVelocity();
-        extendoEncoder = ((PriorityMotor) robot.hardwareQueue.getDevice("rightFront")).motor[0].getCurrentPosition();
+        slidesEncoder = ((PriorityMotor) lyliaRobot.hardwareQueue.getDevice("leftRear")).motor[0].getCurrentPosition();
+        slidesVel = ((PriorityMotor) lyliaRobot.hardwareQueue.getDevice("leftRear")).motor[0].getVelocity();
+        extendoEncoder = ((PriorityMotor) lyliaRobot.hardwareQueue.getDevice("rightFront")).motor[0].getCurrentPosition();
 
         if (System.currentTimeMillis() - lastVoltageUpdatedTime > voltageUpdateTime) {
-            voltage = robot.hardwareMap.voltageSensor.iterator().next().getVoltage();
+            voltage = lyliaRobot.hardwareMap.voltageSensor.iterator().next().getVoltage();
             lastVoltageUpdatedTime = System.currentTimeMillis() ;
         }
 

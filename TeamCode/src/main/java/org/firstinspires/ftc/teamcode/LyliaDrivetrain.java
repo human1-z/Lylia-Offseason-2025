@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.LyliaRobot;
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
 import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 import org.firstinspires.ftc.teamcode.utils.priority.PriorityMotor;
@@ -21,7 +21,7 @@ public class LyliaDrivetrain {
     public Gamepad gamepad;
     public double vertical, horizontal, rotation;
 
-    public LyliaDrivetrain(Robot robot) {
+    public LyliaDrivetrain(LyliaRobot robot) {
         hardwareMap = robot.hardwareMap;
         gamepad = robot.gamepad;
 

@@ -16,7 +16,7 @@ public class LyliaDeposit{
     public VerticalSlides verticalSlides; //raise/lower vertical slides
     public LyliaIntake intake;
 
-    // arbitrary numbers
+    // claw open/close servo
     public static double
             CLAW_OPEN = Math.toRadians(50),
             CLAW_CLOSED = Math.toRadians(0);
@@ -55,7 +55,7 @@ public class LyliaDeposit{
             BAR1 = 81,
             BAR2 = 73;
 
-    public Robot robot;
+    public LyliaRobot robot;
 
     public enum State {
         IDLE,
@@ -67,7 +67,7 @@ public class LyliaDeposit{
         DEPOSIT_PIXEL
     }
 
-    public LyliaDeposit(Robot robot){
+    public LyliaDeposit(LyliaRobot robot){
         this.robot = robot;
 
         claw = new nPriorityServo(robot.hardwareMap.get(Servo[].class, "claw"), "claw", AXON_MINI, 0.25,0.75,0.5, new boolean[]{false}, 0.2, 0.4);

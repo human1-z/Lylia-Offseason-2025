@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.LyliaRobot;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -20,7 +20,7 @@ public class LyliaIntake {
     //so if you see a constant that doesn't make sense, that's why
 
     public HardwareMap hardwareMap;
-    public Robot robot;
+    public LyliaRobot robot;
     public PriorityMotor intakeMotor;
     public PriorityMotor extendoMotor;
     public nPriorityServo intakeRotServo;
@@ -42,7 +42,7 @@ public class LyliaIntake {
 
     public State intakeState = State.IDLE;
 
-    public LyliaIntake(Robot robot) {
+    public LyliaIntake(LyliaRobot robot) {
         this.robot = robot;
         hardwareMap = robot.hardwareMap;
 
