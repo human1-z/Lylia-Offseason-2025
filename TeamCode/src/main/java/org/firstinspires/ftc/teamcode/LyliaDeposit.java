@@ -17,11 +17,43 @@ public class LyliaDeposit{
     public LyliaIntake intake;
 
     // arbitrary numbers
-    public static double CLAW_OPEN = Math.toRadians(50), CLAW_CLOSED = Math.toRadians(0);
-    public static double CLAW_TRANSFER_ANGLE = Math.toRadians(45), CLAW_DEPOSIT_ANGLE = Math.toRadians(0), CLAW_ROTATE_POWER = 0.5;
-    public static double ARM_TRANSFER_ANGLE = Math.toRadians(45), ARM_PIXEL_ANGLE = Math.toRadians(270), ARM_SAMPLE_ANGLE = Math.toRadians(300), ARM_ROTATE_POWER = 0.5;
-    public static double ARM_EXTENSION_NONE = 0, ARM_EXTENSION_FULL = 100;
-    public static double SLIDES_ZERO_POSITION = 0, SLIDES_DEPOSIT_PIXEL = 200, SLIDES_DEPOSIT_SAMPLE = 300;
+    public static double
+            CLAW_OPEN = Math.toRadians(50),
+            CLAW_CLOSED = Math.toRadians(0);
+
+    // claw rotation servo
+    public static double
+            CLAW_ANGLE_ZERO = Math.toRadians(0),
+            CLAW_ANGLE_TRANSFER = Math.toRadians(45),
+            CLAW_ANGLE_DEPOSIT = Math.toRadians(0),
+            CLAW_ROTATE_POWER = 0.5;
+
+    // arm rotation servo
+    public static double
+            ARM_ANGLE_ZERO = Math.toRadians(0),
+            ARM_ANGLE_TRANSFER = Math.toRadians(45),
+            ARM_ANGLE_PIXEL = Math.toRadians(270),
+            ARM_ANGLE_SAMPLE = Math.toRadians(300),
+            ARM_ROTATE_POWER = 0.5;
+
+    // arm extension servo
+    public static double
+            ARM_EXTENSION_NONE = 0,
+            ARM_EXTENSION_FULL = 100;
+
+    // vertical slides motors
+    public static double
+            SLIDES_ZERO_POSITION = 0,
+            SLIDES_TRANSFER_POSITION = 0, // ideally we minimize the number of parts we need to move for transfer, but this is here if it's needed
+            SLIDES_DEPOSIT_PIXEL = 200,
+            SLIDES_DEPOSIT_SAMPLE = 300;
+
+    // end effector specifications for IK
+    private static double
+            HEIGHT_OFFSET = 17,
+            DISTANCE_OFFSET = 56,
+            BAR1 = 81,
+            BAR2 = 73;
 
     public Robot robot;
 
@@ -66,69 +98,53 @@ public class LyliaDeposit{
         claw.setTargetAngle(CLAW_CLOSED, 1);
     }
     public void setArmLength(double length) {
-        /*
-        */
-
-        // extension ranges from 0 to 100 mm
         double radians;
-        radians =
+        radians = (Math.acos(((length + DISTANCE_OFFSET)*(length + DISTANCE_OFFSET) + HEIGHT_OFFSET*HEIGHT_OFFSET - BAR2*BAR2) / BAR1*BAR1)) / 2;
         armSlidesServo.setTargetAngle(radians);
     }
 
     public void update() {
         switch (state) {
             case IDLE:
-                // vertical slides fully down
-                // horizontal slides retracted?
-                // move everything to the starting position
-                clawOpen(); // assuming there is space to keep it open while everything is retracted
-                break;
-            case TRANSFER_OPEN:
-                // vertical slides fully down
-                verticalSlides.setTargetPosition(SLIDES_ZERO_POSITION);
-                // horizontal slides retracted
+                setArmLength(ARM_EXTENSION_NONE); // retract the end effector
+                setClawRotation(CLAW_ANGLE_ZERO);
+                setArmRotServo(ARM_ANGLE_ZERO); // arm facing down, parallel to vertical slides
+                verticalSlides.setTargetPosition(SLIDES_ZERO_POSITION); // retract vertical slides
+                clawClose(); // if the claw fits in the robot while it's open, we might not need this
 
-                // arm rotated to be about 120 degrees from vertical
-                setArmRotServo(ARM_TRANSFER_ANGLE);
-                // end effector (claw) rotated 90 degrees to arm
-                setClawRotation(CLAW_TRANSFER_ANGLE);
-                // claw OPEN
-                clawOpen();
-                break;
-            case TRANSFER_CLOSED:
-                // same as above, except
-                // claw CLOSED
-                clawClose();
                 if (intake.intakeState == LyliaIntake.State.TRANSFER_READY) {
-                    // need to check whether it's a sample or a pixel
-                    state = State.DEPOSIT_SAMPLE_WAIT;
+                    state = State.TRANSFER_OPEN;
                 } else {
                     break;
                 }
+            case TRANSFER_OPEN:
+                verticalSlides.setTargetPosition(SLIDES_TRANSFER_POSITION); // raise v slides
+                setArmRotServo(ARM_ANGLE_TRANSFER); // raise the arm
+                setClawRotation(CLAW_ANGLE_TRANSFER);
+                clawOpen();
+                break;
+            case TRANSFER_CLOSED:
+                clawClose();
+                if (/* use vision to differentiate?; teleop: buttons? */) {
+                    state = State.DEPOSIT_SAMPLE_WAIT;
+                } else {
+                    state = State.DEPOSIT_PIXEL_WAIT;
+                }
             case DEPOSIT_SAMPLE_WAIT:
-                // vertical slides up
-
-                // horizontal slides still retracted
-                // arm rotated to be about 300 degrees from vertical
-                setArmRotServo(ARM_SAMPLE_ANGLE);
-                // end effector rotated to be parallel to ground
-                setClawRotation(CLAW_DEPOSIT_ANGLE);
-                break;
+                verticalSlides.setTargetPosition(SLIDES_DEPOSIT_SAMPLE);
+                setArmRotServo(ARM_ANGLE_SAMPLE);
+                setClawRotation(CLAW_ANGLE_DEPOSIT);
+                state = State.DEPOSIT_SAMPLE;
             case DEPOSIT_PIXEL_WAIT:
-                // vertical slides up, height depending on how high pixel the poles are
-
-                // horizontal slides still retracted
-                // arm rotated to be parallel to the ground
-                setArmRotServo(ARM_PIXEL_ANGLE);
-                // end effector rotated to also be parallel to ground
-                setClawRotation(CLAW_DEPOSIT_ANGLE);
-                break;
+                verticalSlides.setTargetPosition(SLIDES_DEPOSIT_PIXEL);
+                setArmRotServo(ARM_ANGLE_PIXEL);
+                setClawRotation(CLAW_ANGLE_DEPOSIT);
+                state = State.DEPOSIT_PIXEL;
             case DEPOSIT_SAMPLE:
-                //same as above, but
                 clawOpen();
                 state = State.IDLE;
             case DEPOSIT_PIXEL:
-
+                setArmLength(ARM_EXTENSION_FULL);
                 clawOpen();
                 state = State.IDLE;
         }
