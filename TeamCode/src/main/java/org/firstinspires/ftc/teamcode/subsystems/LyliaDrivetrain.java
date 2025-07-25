@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static java.lang.Double.max;
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -76,5 +74,4 @@ public class LyliaDrivetrain {
         rR.setTargetPower( (vertical + horizontal - rotation) / normDenominator );
 
     }
-
 }

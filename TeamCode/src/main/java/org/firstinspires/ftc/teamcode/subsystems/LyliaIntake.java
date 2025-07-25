@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.utils.Globals.START_LOOP;
+
 import org.firstinspires.ftc.teamcode.LyliaRobot;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -141,14 +143,10 @@ public class LyliaIntake {
                 break;
 
         }
-
     }
 
     public boolean objectHeld() {
         //logic for this should change i think
         return Math.random() >= 0.5;
     }
-
-
-
 }

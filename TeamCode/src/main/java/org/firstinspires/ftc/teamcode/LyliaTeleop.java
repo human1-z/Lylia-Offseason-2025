@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.sensors.Sensors;
-import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 import org.firstinspires.ftc.teamcode.subsystems.LyliaDrivetrain;
+import org.firstinspires.ftc.teamcode.utils.priority.HardwareQueue;
 
 public class LyliaTeleop extends LinearOpMode{
     @Override
